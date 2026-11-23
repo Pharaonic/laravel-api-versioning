@@ -1,0 +1,8 @@
+parameters:
+    level: max
+    paths:
+        - src
+        # The trait is only analysed through the fixture resources that use it.
+        - tests/Fixtures
+    tmpDir: .phpstan-cache
+    treatPhpDocTypesAsCertain: false
