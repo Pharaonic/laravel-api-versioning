@@ -41,7 +41,7 @@ Nested resources, `when()`, `whenLoaded()`, `mergeWhen()`, collections and pagin
 
 ### Resource Classes per Version
 
-For structural changes, map a resource to version-specific classes, for example in a service provider:
+For structural changes, map a resource to version-specific classes in a service provider's `boot()` method:
 
 ```php title="app/Providers/AppServiceProvider.php"
 use App\Http\Resources\UserResource;
@@ -55,6 +55,8 @@ public function boot()
     ], 'base');
 }
 ```
+
+The map lives as long as the application, which is the whole worker under Laravel Octane, so register it while the application boots, never during a request. A resource can be registered once; registering it again throws a `LogicException`.
 
 Then build resources through the service:
 
