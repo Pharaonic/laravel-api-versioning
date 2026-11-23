@@ -33,6 +33,12 @@
 | --- | --- | --- |
 | `$request->apiVersion()` | The resolved version, `null` when the route is not versioned | `Version\|null` |
 
+### JsonResource
+
+| Method | Description | Returns |
+| --- | --- | --- |
+| `$this->whenVersion(string $expression, mixed $value, mixed $default = null)` | `$value` (a closure is called) when the request version matches; otherwise `$default` when given, else Laravel's `MissingValue` | `mixed` |
+
 ### Version
 
 | Method | Description | Returns |
@@ -70,6 +76,6 @@ Resolve it from the container.
 
 | Name | Description |
 | --- | --- |
-| `Concerns\InteractsWithApiVersion` | Trait adding `whenVersion(string $expression, mixed $value, mixed $default = null)` to a resource |
+| `Concerns\InteractsWithApiVersion` | Trait providing the same `whenVersion()`, for resources written for Laravel 8 and earlier |
 | `Contracts\VersionResolver` | `resolve(Request $request): ?string` for custom resolvers |
 | `Exceptions\ApiVersionException` | `errorCode()` plus the `MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` and `RETIRED` constants |
