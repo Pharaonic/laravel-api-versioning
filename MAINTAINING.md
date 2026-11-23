@@ -14,7 +14,7 @@ Per-line differences beyond constraints:
 
 - `JsonResource` is macroable from Laravel 9. From `9.x` the provider also registers `whenVersion()` as a macro; on every line the `InteractsWithApiVersion` trait provides it, and the docs of `6.x`–`8.x` show the trait.
 - Scoped bindings (`{part:slug}`) exist from Laravel 7; their test skips on `6.x`.
-- `6.x` and `7.x` reproduce `route:cache` in-process in `RouteCacheTest` (serialized routes on 6, a compiled collection on 7); from `8.x` it runs `route:cache` in the Testbench CLI, which loads the fixture `RouteCacheServiceProvider` from `testbench.yaml`.
+- `6.x` and `7.x` reproduce `route:cache` in-process in `RouteCacheTest` (serialized routes on 6, a compiled collection on 7); from `8.x` it runs `route:cache` in the Testbench CLI, which loads the fixture `RouteCacheServiceProvider` from `testbench.yaml`; from `9.x` it also caches Testbench's `_workbench` routes, which the test leaves out.
 
 ## Core library
 
