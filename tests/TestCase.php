@@ -66,7 +66,7 @@ abstract class TestCase extends Orchestra
         return $this->app->make('router');
     }
 
-    protected function createWidgets(): void
+    public function createWidgets(): void
     {
         Schema::create('widgets', function (Blueprint $table): void {
             $table->increments('id');
