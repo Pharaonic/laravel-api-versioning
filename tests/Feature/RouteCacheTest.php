@@ -73,8 +73,9 @@ function versionedRouteSnapshot(): array
     foreach (Route::getRoutes()->getRoutes() as $route) {
         expect($route)->toBeInstanceOf(RoutingRoute::class);
 
-        // The Testbench CLI adds its own Workbench routes to the routes it caches.
-        if (str_starts_with($route->uri(), '_workbench')) {
+        // The Testbench CLI adds its own Workbench routes to the routes it caches,
+        // and from Laravel 12 the storage/{path} routes of its local disk.
+        if (str_starts_with($route->uri(), '_workbench') || str_starts_with($route->uri(), 'storage/')) {
             continue;
         }
 
