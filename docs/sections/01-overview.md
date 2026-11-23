@@ -32,6 +32,12 @@ Deprecation, Sunset and Link headers per version, and retired versions are rejec
 ### Cache Safe {icon="bolt"}
 Everything works after route:cache and config:cache, and the version lives on the request only.
 
+### Predictable Errors {icon="alert-circle"}
+Missing, unknown, conflicting, unavailable and retired versions each have an error code and a configurable status, and messages never repeat what the client sent.
+
+### Checked at Registration {icon="shield-check"}
+Unknown versions, constraints that leave no version, invalid controller maps and duplicate routes or names fail when routes load.
+
 ### AI Ready {icon="bot"}
 Laravel Boost guideline and skill included, so php artisan boost:install teaches your coding agent the package.
 :::
