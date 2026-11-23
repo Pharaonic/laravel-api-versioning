@@ -201,7 +201,7 @@ test('group constraints apply to resources and nested groups intersect', functio
     $this->getJson('/both', ['X-API-Version' => 'v3'])->assertNotFound();
 });
 
-test('constraints reject unknown duplicate and disjoint versions', function (Closure $register) {
+test('constraints reject unknown duplicate and disjoint versions', function ($register) {
     $register();
 })->with([
     'unknown' => [fn () => fn () => Route::get('a', ProfileController::class)->versions('v9')],
