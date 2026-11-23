@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 8.0.0 - Unreleased
+
+### Compatibility
+
+- Laravel 8.75+ on PHP 8.0 and 8.1.
+- The same API and behavior as 7.0.0.
+- Versioned routes and version controllers work with `php artisan route:cache`.
+
 ## 7.0.0 - Unreleased
 
 ### Compatibility
