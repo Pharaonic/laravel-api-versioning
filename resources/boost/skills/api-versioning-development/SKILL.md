@@ -106,7 +106,7 @@ class AcceptHeaderVersion implements VersionResolver
 
 `$this->whenVersion($expression, $value, $default = null)` is a `JsonResource` macro. Expressions are `v2` or `=v2`, `>=v2`, `>v2`, `<=v2`, `<v2`. When the expression does not match, the field is removed with Laravel's `MissingValue` (never sent as `null`) and a closure value is never called; with a third argument the field gets that default instead. A resource rendered without a request version (console, queue, a route that is not versioned) matches no expression. The `Pharaonic\Laravel\ApiVersioning\Concerns\InteractsWithApiVersion` trait provides the same method and keeps working.
 
-For structural changes, map a resource to classes per version, for example in `AppServiceProvider::boot()`:
+For structural changes, map a resource to classes per version in a service provider's `boot()`, never during a request: the map lasts as long as the application, which is the whole worker under Laravel Octane, and a resource can be registered once.
 
 ```php
 use Pharaonic\Laravel\ApiVersioning\VersionedResources;
