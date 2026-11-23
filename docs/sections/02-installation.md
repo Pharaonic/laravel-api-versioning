@@ -5,7 +5,7 @@ Install the package with Composer. The service provider and the `Route`, `Reques
 ### Requirements
 
 - PHP 8.0
-- Laravel 6.x (6.20 or later)
+- Laravel 7.x (7.30 or later)
 
 ### Composer Installation
 

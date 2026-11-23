@@ -2,88 +2,70 @@
 
 declare(strict_types=1);
 
-namespace Pharaonic\Laravel\ApiVersioning\Tests\Feature;
-
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use LogicException;
 use Pharaonic\Laravel\ApiVersioning\ApiVersioningServiceProvider;
 use Pharaonic\Laravel\ApiVersioning\Support\Macros;
-use Pharaonic\Laravel\ApiVersioning\Tests\TestCase;
 use Pharaonic\Laravel\ApiVersioning\VersionedResources;
 use Pharaonic\Laravel\ApiVersioning\VersionRegistry;
-use ReflectionProperty;
 
-final class ServiceProviderTest extends TestCase
-{
-    public function test_the_configuration_is_merged_under_pharaonic(): void
-    {
-        $defaults = require __DIR__.'/../../config/api-versioning.php';
+test('the configuration is merged under pharaonic', function () {
+    $defaults = require __DIR__.'/../../config/api-versioning.php';
 
-        $this->assertSame(['v1', 'v2', 'v3'], config('pharaonic.api-versioning.versions'));
-        $this->assertSame($defaults['status'], config('pharaonic.api-versioning.status'));
-        $this->assertSame('X-API-Version', config('pharaonic.api-versioning.header'));
-        $this->assertNull(config('pharaonic.api-versioning.default'));
-        $this->assertSame(['v1'], $defaults['versions']);
-        $this->assertSame(['path', 'header'], $defaults['resolvers']);
-    }
+    expect(config('pharaonic.api-versioning.versions'))->toBe(['v1', 'v2', 'v3'])
+        ->and(config('pharaonic.api-versioning.status'))->toBe($defaults['status'])
+        ->and(config('pharaonic.api-versioning.header'))->toBe('X-API-Version')
+        ->and(config('pharaonic.api-versioning.default'))->toBeNull()
+        ->and($defaults['versions'])->toBe(['v1'])
+        ->and($defaults['resolvers'])->toBe(['path', 'header']);
+});
 
-    public function test_the_configuration_is_published_with_the_four_tags(): void
-    {
-        foreach (['pharaonic', 'laravel-api-versioning', 'pharaonic-config', 'api-versioning-config'] as $tag) {
-            $paths = ServiceProvider::pathsToPublish(ApiVersioningServiceProvider::class, $tag);
+test('the configuration is published with the four tags', function (string $tag) {
+    $paths = ServiceProvider::pathsToPublish(ApiVersioningServiceProvider::class, $tag);
 
-            $this->assertSame([realpath(__DIR__.'/../../config/api-versioning.php')], array_map('realpath', array_keys($paths)), $tag);
-            $this->assertSame([$this->app->configPath('pharaonic/api-versioning.php')], array_values($paths), $tag);
+    expect(array_map('realpath', array_keys($paths)))->toBe([realpath(__DIR__.'/../../config/api-versioning.php')])
+        ->and(array_values($paths))->toBe([$this->app->configPath('pharaonic/api-versioning.php')]);
+})->with(['pharaonic', 'laravel-api-versioning', 'pharaonic-config', 'api-versioning-config']);
+
+test('services are singletons built from configuration', function () {
+    expect($this->app->make(VersionRegistry::class))->toBe($this->app->make(VersionRegistry::class))
+        ->and($this->app->make(VersionRegistry::class)->all())->toBe(['v1', 'v2', 'v3'])
+        ->and($this->app->make(VersionedResources::class))->toBe($this->app->make(VersionedResources::class));
+});
+
+test('the macros are registered and registering again is harmless', function () {
+    Macros::register();
+    Macros::register();
+
+    foreach ([Router::class => ['version', 'versions', 'sinceVersion', 'untilVersion'], Route::class => ['versions', 'sinceVersion', 'untilVersion', 'controllers'], Request::class => ['apiVersion']] as $class => $macros) {
+        foreach ($macros as $macro) {
+            expect($class::hasMacro($macro))->toBeTrue($class.'::'.$macro);
         }
     }
+});
 
-    public function test_services_are_singletons_built_from_configuration(): void
-    {
-        $this->assertSame($this->app->make(VersionRegistry::class), $this->app->make(VersionRegistry::class));
-        $this->assertSame(['v1', 'v2', 'v3'], $this->app->make(VersionRegistry::class)->all());
-        $this->assertSame($this->app->make(VersionedResources::class), $this->app->make(VersionedResources::class));
+test('a foreign macro with the same name is never replaced', function () {
+    $property = new ReflectionProperty(Router::class, 'macros');
+    $property->setAccessible(true);
+    /** @var array<string, mixed> $original */
+    $original = $property->getValue();
+
+    $foreign = function (): string {
+        return 'foreign';
+    };
+    Router::macro('sinceVersion', $foreign);
+
+    try {
+        expect(fn () => Macros::register())->toThrow(LogicException::class, 'Router::sinceVersion()');
+
+        $macros = $property->getValue();
+        expect($macros)->toBeArray()
+            ->and($macros['sinceVersion'])->toBe($foreign);
+    } finally {
+        $property->setValue(null, $original);
     }
 
-    public function test_the_macros_are_registered_and_registering_again_is_harmless(): void
-    {
-        Macros::register();
-        Macros::register();
-
-        foreach ([Router::class => ['version', 'versions', 'sinceVersion', 'untilVersion'], Route::class => ['versions', 'sinceVersion', 'untilVersion', 'controllers'], Request::class => ['apiVersion']] as $class => $macros) {
-            foreach ($macros as $macro) {
-                $this->assertTrue($class::hasMacro($macro), $class.'::'.$macro);
-            }
-        }
-    }
-
-    public function test_a_foreign_macro_with_the_same_name_is_never_replaced(): void
-    {
-        $property = new ReflectionProperty(Router::class, 'macros');
-        $property->setAccessible(true);
-        /** @var array<string, mixed> $original */
-        $original = $property->getValue();
-
-        $foreign = function (): string {
-            return 'foreign';
-        };
-        Router::macro('sinceVersion', $foreign);
-
-        try {
-            Macros::register();
-            $this->fail('A foreign macro was replaced.');
-        } catch (LogicException $e) {
-            $this->assertStringContainsString('Router::sinceVersion()', $e->getMessage());
-            $macros = $property->getValue();
-            $this->assertIsArray($macros);
-            $this->assertSame($foreign, $macros['sinceVersion']);
-        } finally {
-            $property->setValue(null, $original);
-        }
-
-        $this->assertInstanceOf(Closure::class, $original['sinceVersion']);
-    }
-}
+    expect($original['sinceVersion'])->toBeInstanceOf(Closure::class);
+});
