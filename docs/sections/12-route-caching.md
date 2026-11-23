@@ -21,6 +21,11 @@ The resolved version is stored on the request (`$request->attributes`), never in
 
 Laravel reuses matched route objects between requests and keeps per-request state on them, such as their parameters and controller instance. For a route with `->controllers()`, the package sets the version's controller the same way, on every request before anything reads it, and points the route back at its own action when the request leaves it.
 
+Two things stay with the application, not the request:
+
+- Resource maps: register them with `VersionedResources::register()` while the application boots (a service provider's `boot()`), never in a middleware or a controller.
+- Custom resolvers: read the request passed to `resolve(Request $request)`. Do not inject the request or keep it on the resolver.
+
 :::info Tested
-Repeated requests with alternating versions on one application are tested, including controller middleware. The package does not run Laravel Octane itself in its test suite.
+Repeated requests with alternating versions on one application are tested, including controller middleware, and so are services resolved before the first request, as a worker resolves them. The package does not run Laravel Octane itself in its test suite.
 :::
