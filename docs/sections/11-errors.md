@@ -10,19 +10,17 @@ Rejected requests throw `Pharaonic\Laravel\ApiVersioning\Exceptions\ApiVersionEx
 | `ApiVersionException::UNAVAILABLE` (`API_VERSION_UNAVAILABLE`) | 404 | the endpoint does not exist in the version |
 | `ApiVersionException::RETIRED` (`API_VERSION_RETIRED`) | 410 | the version is retired |
 
-Change the statuses with `status.*`. When the header resolver is enabled, these errors carry `Vary` too. To use your own error format, render the exception in your exception handler:
+Change the statuses with `status.*`. When the header resolver is enabled, these errors carry `Vary` too. To use your own error format, render the exception where the application configures exceptions:
 
-```php title="app/Exceptions/Handler.php"
+```php title="bootstrap/app.php"
+use Illuminate\Foundation\Configuration\Exceptions;
 use Pharaonic\Laravel\ApiVersioning\Exceptions\ApiVersionException;
 
-public function render($request, Throwable $e)
-{
-    if ($e instanceof ApiVersionException) {
+->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->render(function (ApiVersionException $e) {
         return response()->json(['error' => $e->errorCode()], $e->getStatusCode(), $e->getHeaders());
-    }
-
-    return parent::render($request, $e);
-}
+    });
+})
 ```
 
 Version errors are found right after the route is matched, before the route's middleware: a request with an unknown version gets 400 even when the route needs authentication.

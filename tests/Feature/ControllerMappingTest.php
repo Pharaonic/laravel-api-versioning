@@ -169,7 +169,7 @@ test('route list and url generation keep the route own action', function () {
         ->and($route?->getAction('controller'))->toBe(UserController::class.'@index');
 });
 
-test('invalid controller maps fail at registration', function (Closure $register) {
+test('invalid controller maps fail at registration', function ($register) {
     $register();
 })->with([
     'missing class' => [fn () => fn () => Route::get('a', ProfileController::class)->controllers(['v1' => 'App\\Missing@index'])],
