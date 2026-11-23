@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 7.0.0 - Unreleased
+
+### Compatibility
+
+- Laravel 7.30+ on PHP 8.0.
+- The same API and behavior as 6.0.0.
+- Version-specific controllers work with Laravel 7's scoped bindings (`{part:slug}`) and its compiled route cache.
+
 ## 6.0.0 - Unreleased
 
 ### Added
