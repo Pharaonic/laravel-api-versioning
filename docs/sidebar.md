@@ -14,6 +14,7 @@
   - [Errors](#errors)
 - Advanced
   - [Route Caching and Workers](#route-caching)
+  - [AI Ready](#ai-ready)
 - API Reference
   - [Methods & Classes](#api-reference)
 - Examples
