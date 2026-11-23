@@ -3,9 +3,19 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
+use Pharaonic\Laravel\ApiVersioning\Routing\RouteVersioning;
+use Pharaonic\Laravel\ApiVersioning\Support\VersionNegotiator;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\ProfileController;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Models\Widget;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Resources\WidgetResource;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Resources\WidgetV1Resource;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Resources\WidgetV3Resource;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Support\MediaTypeResolver;
 use Pharaonic\Laravel\ApiVersioning\Version;
+use Pharaonic\Laravel\ApiVersioning\VersionedResources;
+use Pharaonic\Laravel\ApiVersioning\VersionRegistry;
 
 // One application serving many requests, as a long-running worker does: the
 // router, its Route objects and the package singletons are shared, only the
@@ -49,4 +59,41 @@ test('the version lives only on the request', function () {
     $fresh = Request::create('/profile');
     expect($fresh->apiVersion())->toBeNull()
         ->and($fresh->attributes->get('pharaonic.api-versioning'))->toBeNull();
+});
+
+test('services resolved before the first request keep no request state', function () {
+    $this->versioning(['resolvers' => ['header', 'query', MediaTypeResolver::class]]);
+
+    // A worker boots once: the services exist before any request, and the
+    // resource map is registered at boot, as an application does.
+    $services = [];
+
+    foreach ([VersionRegistry::class, RouteVersioning::class, VersionNegotiator::class, VersionedResources::class] as $service) {
+        $services[$service] = $this->app->make($service);
+    }
+
+    $services[VersionedResources::class]->register(WidgetResource::class, ['v1' => WidgetV1Resource::class, 'v3' => WidgetV3Resource::class], 'base');
+    $this->createWidgets();
+
+    Route::middleware(SubstituteBindings::class)->get('widgets/{widget}', function (Widget $widget) {
+        return app(VersionedResources::class)->make(WidgetResource::class, $widget);
+    })->sinceVersion('v1');
+    Route::get('profile', ProfileController::class)->sinceVersion('v1');
+
+    $this->getJson('/widgets/1', ['X-API-Version' => 'v3'])->assertJsonPath('data.profile.name', 'First');
+    $this->getJson('/widgets/1?version=v1')->assertJsonPath('data.title', 'First');
+    $this->get('/widgets/1', ['Accept' => 'application/vnd.example.v2+json'])->assertJsonPath('data.name', 'First');
+    $this->getJson('/profile?version=v2')->assertJsonPath('version', 'v2');
+    $this->getJson('/profile')->assertStatus(400);
+    $this->getJson('/widgets/1', ['X-API-Version' => 'v1'])->assertJsonPath('data.title', 'First');
+    $this->get('/profile', ['Accept' => 'application/vnd.example.v3+json'])->assertJsonPath('version', 'v3');
+
+    foreach ($services as $service => $instance) {
+        expect($this->app->make($service))->toBe($instance);
+
+        foreach ((new ReflectionObject($instance))->getProperties() as $property) {
+            $property->setAccessible(true);
+            expect($property->getValue($instance))->not->toBeInstanceOf(Request::class);
+        }
+    }
 });
