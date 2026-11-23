@@ -12,9 +12,7 @@ use Pharaonic\Laravel\ApiVersioning\Contracts\VersionResolver;
  */
 final class HeaderVersionResolver implements VersionResolver
 {
-    public function __construct(private string $header)
-    {
-    }
+    public function __construct(private string $header) {}
 
     public function header(): string
     {

@@ -12,9 +12,7 @@ use Pharaonic\Laravel\ApiVersioning\Contracts\VersionResolver;
  */
 final class QueryVersionResolver implements VersionResolver
 {
-    public function __construct(private string $parameter)
-    {
-    }
+    public function __construct(private string $parameter) {}
 
     public function resolve(Request $request): ?string
     {

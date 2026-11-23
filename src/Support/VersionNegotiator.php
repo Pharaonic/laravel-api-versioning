@@ -43,8 +43,7 @@ final class VersionNegotiator
         private Container $container,
         private Repository $config,
         private VersionRegistry $registry,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ApiVersionException

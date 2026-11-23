@@ -39,9 +39,7 @@ final class RouteVersioning
     /** Whether a Route::version() group is being registered right now. */
     private bool $inVersionGroup = false;
 
-    public function __construct(private VersionRegistry $registry)
-    {
-    }
+    public function __construct(private VersionRegistry $registry) {}
 
     /**
      * @return Metadata|null

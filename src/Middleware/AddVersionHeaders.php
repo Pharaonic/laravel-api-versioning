@@ -27,8 +27,7 @@ final class AddVersionHeaders
     public function __construct(
         private VersionNegotiator $negotiator,
         private VersionRegistry $registry,
-    ) {
-    }
+    ) {}
 
     public function handle(Request $request, Closure $next): mixed
     {
