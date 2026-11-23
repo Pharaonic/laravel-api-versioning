@@ -135,14 +135,17 @@ return app(VersionedResources::class)->collection(UserResource::class, User::pag
 
 ### Errors
 
-Rejected requests throw `Pharaonic\Laravel\ApiVersioning\Exceptions\ApiVersionException`, an `HttpException` rendered by Laravel's exception handler. `errorCode()` returns `ApiVersionException::MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` or `RETIRED`. Messages never repeat what the client sent. When rendering it yourself, pass `$e->getHeaders()` to keep `Vary` and `Sunset`, for example in `App\Exceptions\Handler::register()`:
+Rejected requests throw `Pharaonic\Laravel\ApiVersioning\Exceptions\ApiVersionException`, an `HttpException` rendered by Laravel's exception handler. `errorCode()` returns `ApiVersionException::MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` or `RETIRED`. Messages never repeat what the client sent. When rendering it yourself, pass `$e->getHeaders()` to keep `Vary` and `Sunset`. Register the renderer where the application configures exceptions: `->withExceptions()` in `bootstrap/app.php` (Laravel 11 and later), or `App\Exceptions\Handler::register()` with `$this->renderable(...)` (Laravel 10):
 
 ```php
-$this->renderable(fn (ApiVersionException $e) => response()->json(
-    ['error' => $e->errorCode(), 'message' => $e->getMessage()],
-    $e->getStatusCode(),
-    $e->getHeaders(),
-));
+// bootstrap/app.php
+->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->render(fn (ApiVersionException $e) => response()->json(
+        ['error' => $e->errorCode(), 'message' => $e->getMessage()],
+        $e->getStatusCode(),
+        $e->getHeaders(),
+    ));
+})
 ```
 
 ## Pitfalls
