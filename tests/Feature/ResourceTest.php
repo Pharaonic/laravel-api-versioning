@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Traits\Macroable;
 use Pharaonic\Laravel\ApiVersioning\Support\VersionExpression;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Models\Widget;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Resources\WidgetResource;
@@ -118,11 +117,7 @@ test('excluded closures run no queries', function () {
     $this->getJson('/counted', ['X-API-Version' => 'v2'])->assertJsonPath('queries', 1)->assertJsonPath('data.count', 2);
 });
 
-test('the macro works without the trait where json resource is macroable', function () {
-    if (! in_array(Macroable::class, class_uses_recursive(JsonResource::class), true)) {
-        $this->markTestSkipped('JsonResource is macroable from Laravel 9; use the InteractsWithApiVersion trait before.');
-    }
-
+test('the macro works without the trait', function () {
     Route::get('macro/{widget}', function (Widget $widget) {
         return new class($widget) extends JsonResource
         {

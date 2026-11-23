@@ -1,17 +1,14 @@
 ## Versioned Resources
 
-Resources stay Laravel's `JsonResource`. Add the `InteractsWithApiVersion` trait to use `whenVersion()`:
+Resources stay Laravel's `JsonResource`. The package registers `whenVersion()` as a `JsonResource` macro, so every resource can use it:
 
 ```php title="app/Http/Resources/UserResource.php"
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Pharaonic\Laravel\ApiVersioning\Concerns\InteractsWithApiVersion;
 
 class UserResource extends JsonResource
 {
-    use InteractsWithApiVersion;
-
     public function toArray($request)
     {
         return [
@@ -35,8 +32,8 @@ When the expression does not match, the field is removed with Laravel's `Missing
 
 Nested resources, `when()`, `whenLoaded()`, `mergeWhen()`, collections and paginated collections keep Laravel's behavior and use the same request version.
 
-:::info On Laravel 9 and later
-`JsonResource` is macroable from Laravel 9, and the package also registers `whenVersion()` as a macro there. On this line, use the trait.
+:::info The InteractsWithApiVersion trait
+The `Pharaonic\Laravel\ApiVersioning\Concerns\InteractsWithApiVersion` trait provides the same `whenVersion()`. Laravel 8 and earlier need it, because `JsonResource` is macroable from Laravel 9; resources that already use it keep working.
 :::
 
 ### Resource Classes per Version
