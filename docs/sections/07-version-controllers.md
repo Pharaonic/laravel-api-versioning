@@ -17,7 +17,7 @@ Route::get('users/{user}', 'UserController@show')->controllers([
 The controller is selected when the route is matched, before Laravel gathers the route's middleware. Everything after that is Laravel's own:
 
 - the controller's constructor injection and its `$this->middleware()` (including `only` and `except`);
-- implicit and explicit route model binding, scoped bindings and missing models (404);
+- implicit and explicit route model binding and missing models (404);
 - method injection, `authorize()`, policies and the `can` middleware.
 
 ### No Silent Fallback
