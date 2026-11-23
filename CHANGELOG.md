@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 11.0.1 - Unreleased
+
+### Changed
+
+- The package page and the docs overview show that the package is AI ready, with the Laravel Boost badge, callout and feature card. No code changes.
+
 ## 11.0.0 - 2026-11-23
 
 ### Compatibility
