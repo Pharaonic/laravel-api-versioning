@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 12.0.0 - Unreleased
+
+### Compatibility
+
+- Laravel 12 on PHP 8.2, 8.3, 8.4 and 8.5.
+- The same API and behavior as 11.0.0, including the Laravel Boost resources.
+
 ## 11.0.0 - Unreleased
 
 ### Compatibility
