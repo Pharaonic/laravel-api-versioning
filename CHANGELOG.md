@@ -1,0 +1,24 @@
+# Changelog
+
+All notable changes to this project are documented here.
+
+## 6.0.0 - Unreleased
+
+### Added
+
+- `Route::version()`, `Route::versions()`, `Route::sinceVersion()` and `Route::untilVersion()` group registrars that keep Laravel's own prefix, name, middleware, domain and where attributes, and accept a closure or a route file.
+- `->versions()`, `->sinceVersion()`, `->untilVersion()` and `->controllers()` on individual routes. Constraints are inclusive, compared by the order of the `versions` list, and always narrow when nested.
+- One Laravel route per method and URI serves a controller per version (`->controllers()`), selected before Laravel gathers middleware, so controller middleware, constructor and method injection, implicit and explicit binding and authorization run natively. Unmapped versions are not found unless the route explicitly falls back to its own controller.
+- Header, query and path resolvers, custom resolvers through the `VersionResolver` contract, an optional default version, and `ApiVersionException` for missing, unknown, conflicting, unavailable and retired versions, with configurable status codes.
+- Optional path templates (`path.prefix`, `path.name`) for `Route::version()` groups; no URL prefix is added by default.
+- `Request::apiVersion()` and the immutable `Version` (`name()`, `is()`, `atLeast()`, `atMost()`, `after()`, `before()`), kept on the request only.
+- `whenVersion()` for JSON resources through the `InteractsWithApiVersion` trait, removing fields with Laravel's `MissingValue` and never calling the closures of removed fields. From Laravel 9 it is also registered as a `JsonResource` macro.
+- `VersionedResources`: opt-in mapping of a resource to version-specific resource classes, with the `none`, `base` and `previous` fallbacks.
+- `Deprecation` (RFC 9745), `Sunset` (RFC 8594) and `Link` headers per version lifecycle (`active`, `deprecated`, `sunset-announced`, `retired`), and `Vary` on the version header.
+- Registration errors for unknown versions, empty constraints, invalid controller maps, duplicate method and URI definitions, duplicate route names and macro name collisions.
+- PHPUnit tests, Pint, PHPStan (max), CI, and the Pharaonic repository baseline.
+
+### Compatibility
+
+- PHP 8.0.
+- Laravel 6.20 or later.
