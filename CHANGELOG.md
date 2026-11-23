@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 13.0.0 - Unreleased
+
+### Compatibility
+
+- Laravel 13 on PHP 8.3, 8.4 and 8.5.
+- The same API and behavior as 12.0.0, including the Laravel Boost resources.
+
 ## 12.0.0 - Unreleased
 
 ### Compatibility
