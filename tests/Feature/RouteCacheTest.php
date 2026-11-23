@@ -71,6 +71,12 @@ function versionedRouteSnapshot(): array
 
     foreach (Route::getRoutes()->getRoutes() as $route) {
         expect($route)->toBeInstanceOf(RoutingRoute::class);
+
+        // The Testbench CLI adds its own Workbench routes to the routes it caches.
+        if (str_starts_with($route->uri(), '_workbench')) {
+            continue;
+        }
+
         // Compiling the route cache names unnamed routes "generated::…".
         $name = str_starts_with((string) $route->getName(), 'generated::') ? '' : $route->getName();
         $routes[] = implode('|', $route->methods()).' '.$route->uri().' '.$name.' '.$route->getActionName()

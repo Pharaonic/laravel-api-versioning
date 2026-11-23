@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
@@ -39,7 +40,7 @@ test('the macros are registered and registering again is harmless', function () 
     Macros::register();
     Macros::register();
 
-    foreach ([Router::class => ['version', 'versions', 'sinceVersion', 'untilVersion'], Route::class => ['versions', 'sinceVersion', 'untilVersion', 'controllers'], Request::class => ['apiVersion']] as $class => $macros) {
+    foreach ([Router::class => ['version', 'versions', 'sinceVersion', 'untilVersion'], Route::class => ['versions', 'sinceVersion', 'untilVersion', 'controllers'], Request::class => ['apiVersion'], JsonResource::class => ['whenVersion']] as $class => $macros) {
         foreach ($macros as $macro) {
             expect($class::hasMacro($macro))->toBeTrue($class.'::'.$macro);
         }
