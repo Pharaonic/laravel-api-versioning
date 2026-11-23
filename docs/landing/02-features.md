@@ -23,4 +23,7 @@ items:
   - icon: bolt
     title: Cache and Octane Safe
     text: Works with `route:cache` and `config:cache`, and keeps the version on the request only.
+  - icon: bot
+    title: AI Ready
+    text: "Ships a Laravel Boost guideline and an `api-versioning-development` skill, so `php artisan boost:install` teaches Claude Code, Cursor, Codex or Copilot the whole API."
 ---
