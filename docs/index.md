@@ -19,13 +19,13 @@ breadcrumbs:
 card:
   topic: api
   icon: code-brackets
-  tags: api versioning rest routing header query path controllers json-resources deprecation sunset
+  tags: api versioning rest routing header query path controllers json-resources deprecation sunset ai-ready laravel-boost
   description: Laravel-native API versioning. Version groups and constraints on Route, header, query and path resolution, a controller per version on one cacheable route, and versioned JSON resources.
 
 seo:
   title: "{package.fullName} - Header, Query and Path API Versioning"
   description: "{package.name} is a Laravel package for API versioning with native routes: version groups, since/until constraints, version-specific controllers, versioned JSON resources and Deprecation/Sunset headers. {package.downloadsShort}+ downloads, {package.license} licensed."
-  keywords: laravel api versioning, api version header, laravel versioned routes, versioned controllers, json resource versioning, deprecation header, sunset header
+  keywords: laravel api versioning, api version header, laravel versioned routes, versioned controllers, json resource versioning, deprecation header, sunset header, laravel boost, ai ready
   author: Pharaonic
   images:
     - "{package.cover}"

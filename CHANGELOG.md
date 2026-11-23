@@ -2,28 +2,40 @@
 
 All notable changes to this project are documented here.
 
-## 13.0.0 - Unreleased
+## 13.0.2 - 2026-11-23
+
+### Changed
+
+- The package page and the docs overview show nine feature cards, adding predictable errors and registration checks, so every row is full. No code changes.
+
+## 13.0.1 - 2026-11-23
+
+### Changed
+
+- The package page and the docs overview show that the package is AI ready, with the Laravel Boost badge, callout and feature card. No code changes.
+
+## 13.0.0 - 2026-11-23
 
 ### Compatibility
 
 - Laravel 13 on PHP 8.3, 8.4 and 8.5.
 - The same API and behavior as 12.0.0, including the Laravel Boost resources.
 
-## 12.0.0 - Unreleased
+## 12.0.0 - 2026-11-23
 
 ### Compatibility
 
 - Laravel 12 on PHP 8.2, 8.3, 8.4 and 8.5.
 - The same API and behavior as 11.0.0, including the Laravel Boost resources.
 
-## 11.0.0 - Unreleased
+## 11.0.0 - 2026-11-23
 
 ### Compatibility
 
 - Laravel 11 on PHP 8.2, 8.3 and 8.4.
 - The same API and behavior as 10.0.0, including the Laravel Boost resources.
 
-## 10.0.0 - Unreleased
+## 10.0.0 - 2026-11-23
 
 ### Added
 
@@ -34,7 +46,7 @@ All notable changes to this project are documented here.
 - Laravel 10 on PHP 8.1, 8.2 and 8.3.
 - The same API and behavior as 9.0.0.
 
-## 9.0.0 - Unreleased
+## 9.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -42,7 +54,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 8.0.0.
 - `whenVersion()` is also a `JsonResource` macro, so resources no longer need the `InteractsWithApiVersion` trait; resources that use it keep working.
 
-## 8.0.0 - Unreleased
+## 8.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -50,7 +62,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 7.0.0.
 - Versioned routes and version controllers work with `php artisan route:cache`.
 
-## 7.0.0 - Unreleased
+## 7.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -58,7 +70,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 6.0.0.
 - Version-specific controllers work with Laravel 7's scoped bindings (`{part:slug}`) and its compiled route cache.
 
-## 6.0.0 - Unreleased
+## 6.0.0 - 2026-11-23
 
 ### Added
 

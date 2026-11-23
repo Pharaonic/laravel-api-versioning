@@ -23,4 +23,13 @@ items:
   - icon: bolt
     title: Cache and Octane Safe
     text: Works with `route:cache` and `config:cache`, and keeps the version on the request only.
+  - icon: alert-circle
+    title: Predictable Errors
+    text: "`ApiVersionException` carries an error code per case and configurable status codes, and never repeats the version the client sent."
+  - icon: shield-check
+    title: Checked at Registration
+    text: Unknown versions, invalid controller maps and duplicate routes or names fail when routes load, not on a request.
+  - icon: bot
+    title: AI Ready
+    text: "Ships a Laravel Boost guideline and an `api-versioning-development` skill, so `php artisan boost:install` teaches Claude Code, Cursor, Codex or Copilot the whole API."
 ---

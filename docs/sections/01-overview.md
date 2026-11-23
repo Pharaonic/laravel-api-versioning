@@ -2,11 +2,16 @@
 - Laravel Package {color=blue}
 - {release.label} {color=green}
 - {package.license} License {color=purple}
+- AI Ready {color=violet}
 :::
 
 # API Versioning
 
 API Versioning adds versions to the routes you already write with Laravel's `Route` facade. A request names its version in a header, the query string, the path or anything your own resolver reads; the package validates it, checks that the endpoint exists in that version, and can run a different controller per version from one route. JSON resources keep Laravel's `JsonResource` and gain `whenVersion()`.
+
+:::success AI Ready
+API Versioning ships Laravel Boost resources: a guideline loaded in every session and an `api-versioning-development` skill loaded when your agent works on versioned endpoints. Run `php artisan boost:install` and Claude Code, Cursor, Codex, Copilot or Gemini CLI write correct versioned routes, controllers and resources. See [AI Ready](#ai-ready).
+:::
 
 :::features
 ### Native Routes {icon="code-brackets"}
@@ -26,6 +31,15 @@ Deprecation, Sunset and Link headers per version, and retired versions are rejec
 
 ### Cache Safe {icon="bolt"}
 Everything works after route:cache and config:cache, and the version lives on the request only.
+
+### Predictable Errors {icon="alert-circle"}
+Missing, unknown, conflicting, unavailable and retired versions each have an error code and a configurable status, and messages never repeat what the client sent.
+
+### Checked at Registration {icon="shield-check"}
+Unknown versions, constraints that leave no version, invalid controller maps and duplicate routes or names fail when routes load.
+
+### AI Ready {icon="bot"}
+Laravel Boost guideline and skill included, so php artisan boost:install teaches your coding agent the package.
 :::
 
 :::info No URL is forced
