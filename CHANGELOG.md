@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## 10.0.0 - Unreleased
+## 10.0.0 - 2026-11-23
 
 ### Added
 
@@ -13,7 +13,7 @@ All notable changes to this project are documented here.
 - Laravel 10 on PHP 8.1, 8.2 and 8.3.
 - The same API and behavior as 9.0.0.
 
-## 9.0.0 - Unreleased
+## 9.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -21,7 +21,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 8.0.0.
 - `whenVersion()` is also a `JsonResource` macro, so resources no longer need the `InteractsWithApiVersion` trait; resources that use it keep working.
 
-## 8.0.0 - Unreleased
+## 8.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -29,7 +29,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 7.0.0.
 - Versioned routes and version controllers work with `php artisan route:cache`.
 
-## 7.0.0 - Unreleased
+## 7.0.0 - 2026-11-23
 
 ### Compatibility
 
@@ -37,7 +37,7 @@ All notable changes to this project are documented here.
 - The same API and behavior as 6.0.0.
 - Version-specific controllers work with Laravel 7's scoped bindings (`{part:slug}`) and its compiled route cache.
 
-## 6.0.0 - Unreleased
+## 6.0.0 - 2026-11-23
 
 ### Added
 
