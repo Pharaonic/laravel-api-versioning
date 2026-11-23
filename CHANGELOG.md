@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 12.0.2 - Unreleased
+
+### Changed
+
+- The package page and the docs overview show nine feature cards, adding predictable errors and registration checks, so every row is full. No code changes.
+
 ## 12.0.1 - 2026-11-23
 
 ### Changed
