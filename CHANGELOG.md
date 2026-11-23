@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 9.0.0 - Unreleased
+
+### Compatibility
+
+- Laravel 9 on PHP 8.0, 8.1 and 8.2.
+- The same API and behavior as 8.0.0.
+- `whenVersion()` is also a `JsonResource` macro, so resources no longer need the `InteractsWithApiVersion` trait; resources that use it keep working.
+
 ## 8.0.0 - Unreleased
 
 ### Compatibility
