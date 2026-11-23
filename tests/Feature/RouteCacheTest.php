@@ -4,49 +4,24 @@ declare(strict_types=1);
 
 use Illuminate\Auth\GenericUser;
 use Illuminate\Routing\CompiledRouteCollection;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Routing\Route as RoutingRoute;
-use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Pharaonic\Laravel\ApiVersioning\Routing\RouteVersioning;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\InvokableV3Controller;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\ProfileController;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\UserController;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\UserV1Controller;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Controllers\UserV2Controller;
-use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Middleware\Tag;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Models\Widget;
+use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\RouteCacheServiceProvider;
 use Pharaonic\Laravel\ApiVersioning\Tests\TestCase;
+use function Orchestra\Testbench\remote;
 
-// Laravel 7's route:cache compiles the routes, and the cached file loads the
-// var_export() of that compilation into a CompiledRouteCollection. The test
-// writes that file, boots a new application that loads only it, and compares
-// routes and responses with the ones before caching.
+// route:cache runs for real in the Testbench CLI, which registers the fixture
+// RouteCacheServiceProvider from testbench.yaml; the reloaded application then
+// loads the compiled routes it wrote, and routes and responses are compared
+// with the ones before caching. config:cache writes var_export() output.
 
-function registerVersionedRoutes(): void
+function versionedRoutesFile(): string
 {
-    Route::middleware([SubstituteBindings::class, Tag::class.':group'])->group(function (): void {
-        Route::get('widgets/{widget}', [UserController::class, 'show'])->controllers([
-            'v1' => [UserV1Controller::class, 'show'],
-            'v2' => [UserV2Controller::class, 'show'],
-        ]);
-        Route::get('users', [UserController::class, 'index'])->name('users')->controllers([
-            'v1' => UserV1Controller::class.'@index',
-            'v3' => InvokableV3Controller::class,
-        ]);
-    });
-
-    foreach (['v1' => UserV1Controller::class, 'v2' => UserV2Controller::class] as $version => $controller) {
-        Route::version($version, function () use ($controller): void {
-            Route::get('users', [$controller, 'index'])->name('users');
-        });
-    }
-
-    Route::prefix('shared/{version}')->group(function (): void {
-        Route::get('profile', ProfileController::class)->versions('v2', 'v3');
-    });
+    return __DIR__.'/../Fixtures/routes/versioned.php';
 }
 
 /**
@@ -107,51 +82,32 @@ function versionedRouteSnapshot(): array
     return $routes;
 }
 
-/**
- * What Laravel 7's RouteCacheCommand writes, in a temporary file.
- */
-function cacheVersionedRoutes(): string
-{
-    $routes = Route::getRoutes();
-    expect($routes)->toBeInstanceOf(RouteCollection::class);
-
-    foreach ($routes as $route) {
-        expect($route)->toBeInstanceOf(RoutingRoute::class);
-        $route->prepareForSerialization();
-    }
-
-    $contents = '<?php app(\'router\')->setCompiledRoutes('.var_export($routes->compile(), true).');';
-    expect($contents)->not->toContain('Closure');
-
-    $file = (string) tempnam(sys_get_temp_dir(), 'api-versioning-routes');
-    file_put_contents($file, $contents.PHP_EOL);
-
-    return $file;
-}
+beforeEach(function () {
+    $this->versioning(RouteCacheServiceProvider::CONFIG);
+});
 
 test('versioned routes serve identical responses from cached routes', function () {
-    $this->versioning(['path.prefix' => 'api/{version}', 'path.name' => '{version}.']);
-    registerVersionedRoutes();
+    require versionedRoutesFile();
     Route::getRoutes()->refreshNameLookups();
 
     $before = versionedRouteSnapshot();
     $responses = versionedResponses($this);
 
-    $file = cacheVersionedRoutes();
-    $this->refreshApplication();
-    $this->versioning(['path.prefix' => 'api/{version}', 'path.name' => '{version}.']);
-
-    expect(Route::getRoutes()->getRoutes())->toHaveCount(0);
+    remote('route:cache')->mustRun();
 
     try {
-        require $file;
-    } finally {
-        unlink($file);
-    }
+        $this->reloadApplication();
+        $this->versioning(RouteCacheServiceProvider::CONFIG);
 
-    expect(Route::getRoutes())->toBeInstanceOf(CompiledRouteCollection::class)
-        ->and(versionedRouteSnapshot())->toBe($before)
-        ->and(versionedResponses($this))->toBe($responses);
+        expect(Route::getRoutes()->getRoutes())->toHaveCount(0);
+        require $this->app->getCachedRoutesPath();
+
+        expect(Route::getRoutes())->toBeInstanceOf(CompiledRouteCollection::class)
+            ->and(versionedRouteSnapshot())->toBe($before)
+            ->and(versionedResponses($this))->toBe($responses);
+    } finally {
+        remote('route:clear')->mustRun();
+    }
 
     // What the requests above must have produced, with and without the cache.
     expect($responses['header v1'])->toBe([200, ['controller' => 'v1', 'widget' => 1, 'name' => 'First'], 'v1,group'])
@@ -165,20 +121,14 @@ test('versioned routes serve identical responses from cached routes', function (
         ->and($responses['named'][1])->toBe('http://localhost/api/v2/users');
 });
 
-test('route list shows cached versioned routes', function () {
-    $this->versioning(['path.prefix' => 'api/{version}', 'path.name' => '{version}.']);
-    registerVersionedRoutes();
-    $file = cacheVersionedRoutes();
-    $this->refreshApplication();
+test('route list shows versioned routes', function () {
+    require versionedRoutesFile();
 
-    try {
-        require $file;
-    } finally {
-        unlink($file);
-    }
+    expect(Artisan::call('route:list'))->toBe(0);
+    $output = Artisan::output();
 
-    expect(Artisan::call('route:list'))->toBe(0)
-        ->and(Artisan::output())->toContain('widgets/{widget}');
+    expect($output)->toContain('widgets/{widget}')
+        ->and($output)->toContain('v2.users');
 });
 
 test('the configuration survives config cache', function () {

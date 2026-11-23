@@ -1,10 +1,10 @@
 <p align="center"><a href="https://pharaonic.dev/packages/laravel/api-versioning" target="_blank"><img src="https://raw.githubusercontent.com/Pharaonic/laravel-api-versioning/develop/docs/cover.webp"></a></p>
 
 <p align="center">
-  <a href="https://php.net" target="_blank"><img src="https://img.shields.io/static/v1?label=PHP&message=8.0&color=blue&style=flat-square" alt="PHP Version : 8.0"></a>
-  <a href="https://laravel.com" target="_blank"><img src="https://img.shields.io/static/v1?label=Laravel&message=7.x&color=F05340&style=flat-square" alt="Laravel Version : 7.x"></a>
+  <a href="https://php.net" target="_blank"><img src="https://img.shields.io/static/v1?label=PHP&message=8.0%20|%208.1&color=blue&style=flat-square" alt="PHP Version : 8.0 | 8.1"></a>
+  <a href="https://laravel.com" target="_blank"><img src="https://img.shields.io/static/v1?label=Laravel&message=8.x&color=F05340&style=flat-square" alt="Laravel Version : 8.x"></a>
   <img src="https://img.shields.io/static/v1?label=License&message=MIT&color=brightgreen&style=flat-square" alt="License">
-  <img src="https://github.com/Pharaonic/laravel-api-versioning/actions/workflows/build.yml/badge.svg?branch=7.x" alt="Build">
+  <img src="https://github.com/Pharaonic/laravel-api-versioning/actions/workflows/build.yml/badge.svg?branch=8.x" alt="Build">
   <br>
   <a href="https://packagist.org/packages/Pharaonic/laravel-api-versioning" target="_blank"><img src="https://img.shields.io/static/v1?label=Packagist&message=pharaonic/laravel-api-versioning&color=blue&logo=packagist&logoColor=white" alt="Source"></a>
   <a href="https://packagist.org/packages/pharaonic/laravel-api-versioning" target="_blank"><img src="https://poser.pugx.org/pharaonic/laravel-api-versioning/v" alt="Packagist Version"></a>
@@ -29,14 +29,19 @@ php artisan vendor:publish --tag=api-versioning-config
 ## Usage
 
 ```php
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserV1Controller;
+use App\Http\Controllers\UserV2Controller;
+
 // config/pharaonic/api-versioning.php: 'versions' => ['v1', 'v2'],
 
-Route::get('users', 'UserController@index')->controllers([
-    'v1' => 'UserV1Controller@index',
-    'v2' => 'UserV2Controller@index',
+Route::get('users', [UserController::class, 'index'])->controllers([
+    'v1' => [UserV1Controller::class, 'index'],
+    'v2' => [UserV2Controller::class, 'index'],
 ]);
 
-Route::get('reports', 'ReportController@index')->sinceVersion('v2');
+Route::get('reports', [ReportController::class, 'index'])->sinceVersion('v2');
 ```
 
 `GET /users` with `X-API-Version: v2` runs `UserV2Controller@index`, with its middleware, bindings and policies. No URL prefix is added unless you configure one.

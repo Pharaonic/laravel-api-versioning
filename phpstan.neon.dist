@@ -4,5 +4,8 @@ parameters:
         - src
         # The trait is only analysed through the fixture resources that use it.
         - tests/Fixtures
+    excludePaths:
+        # Route files call the package's Route macros, which PHPStan cannot see.
+        - tests/Fixtures/routes
     tmpDir: .phpstan-cache
     treatPhpDocTypesAsCertain: false

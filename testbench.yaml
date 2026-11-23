@@ -1,0 +1,6 @@
+providers:
+  - Pharaonic\Laravel\ApiVersioning\ApiVersioningServiceProvider
+  - Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\RouteCacheServiceProvider
+
+env:
+  APP_URL: http://localhost
