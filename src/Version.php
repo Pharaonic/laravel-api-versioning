@@ -16,8 +16,7 @@ final class Version
     public function __construct(
         private string $name,
         private VersionRegistry $registry,
-    ) {
-    }
+    ) {}
 
     public function name(): string
     {

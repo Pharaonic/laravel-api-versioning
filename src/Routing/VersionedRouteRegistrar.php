@@ -148,7 +148,7 @@ final class VersionedRouteRegistrar
             throw new BadMethodCallException(sprintf('Call Route::%s() inside ->group() of an API version registrar.', $method));
         }
 
-        if ($this->native->{$method}(...$parameters) !== $this->native) {
+        if ($this->native !== $this->native->{$method}(...$parameters)) {
             throw new BadMethodCallException(sprintf('Method %s::%s() is not supported.', self::class, $method));
         }
 

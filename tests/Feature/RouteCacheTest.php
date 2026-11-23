@@ -12,6 +12,7 @@ use Pharaonic\Laravel\ApiVersioning\Routing\RouteVersioning;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\Models\Widget;
 use Pharaonic\Laravel\ApiVersioning\Tests\Fixtures\RouteCacheServiceProvider;
 use Pharaonic\Laravel\ApiVersioning\Tests\TestCase;
+
 use function Orchestra\Testbench\remote;
 
 // route:cache runs for real in the Testbench CLI, which registers the fixture

@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## 10.0.0 - Unreleased
+
+### Added
+
+- Laravel Boost resources: a guideline and the `api-versioning-development` skill, so coding agents in applications that use Boost learn the package.
+
+### Compatibility
+
+- Laravel 10 on PHP 8.1, 8.2 and 8.3.
+- The same API and behavior as 9.0.0.
+
 ## 9.0.0 - Unreleased
 
 ### Compatibility

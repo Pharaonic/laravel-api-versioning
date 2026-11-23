@@ -34,8 +34,7 @@ final class PrepareVersionedRoute
         private VersionNegotiator $negotiator,
         private VersionRegistry $registry,
         private Repository $config,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws ApiVersionException

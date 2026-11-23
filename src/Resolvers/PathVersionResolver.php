@@ -16,9 +16,7 @@ use Pharaonic\Laravel\ApiVersioning\Routing\RouteVersioning;
  */
 final class PathVersionResolver implements VersionResolver
 {
-    public function __construct(private string $parameter)
-    {
-    }
+    public function __construct(private string $parameter) {}
 
     public function resolve(Request $request): ?string
     {
