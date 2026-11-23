@@ -9,6 +9,8 @@ badges:
     color: purple
   - label: "{package.downloadsShort}+ downloads"
     color: blue
+  - label: AI Ready · Laravel Boost
+    color: violet
 eyebrow: "{package.name}"
 title: Version your API
 highlight: with Laravel's own routes
@@ -27,4 +29,4 @@ labels:
   copied: Copied!
 ---
 
-{package.name} adds versions to the routes you already write with `Route`. Read the version from a header, the query string or the path, serve a different controller per version from one cacheable route, and shape JSON resources per version, without a custom router, base class or forced URL.
+{package.name} adds versions to the routes you already write with `Route`. Read the version from a header, the query string or the path, serve a different controller per version from one cacheable route, and shape JSON resources per version, without a custom router, base class or forced URL. It is AI ready: `php artisan boost:install` teaches your coding agent the whole package through Laravel Boost.
