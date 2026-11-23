@@ -3,9 +3,13 @@
 A route becomes versioned when it gets a version constraint, either from a group or on the route itself. Versioned routes resolve the request's version before anything else runs; other routes are untouched.
 
 ```php title="routes/api.php"
-Route::get('profile', 'ProfileController@show')->sinceVersion('v1');
-Route::get('reports', 'ReportController@index')->sinceVersion('v2');
-Route::get('legacy', 'LegacyController@index')->untilVersion('v2');
+use App\Http\Controllers\LegacyController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
+
+Route::get('profile', [ProfileController::class, 'show'])->sinceVersion('v1');
+Route::get('reports', [ReportController::class, 'index'])->sinceVersion('v2');
+Route::get('legacy', [LegacyController::class, 'index'])->untilVersion('v2');
 ```
 
 With `X-API-Version: v1`, `/reports` is not found and `/legacy` works; with `v3`, `/reports` works and `/legacy` is not found.

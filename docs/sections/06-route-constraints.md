@@ -3,10 +3,15 @@
 Every route gets the same constraints as groups:
 
 ```php title="routes/api.php"
-Route::get('profile', 'ProfileController@show')->versions('v1', 'v2', 'v3');
-Route::get('reports', 'ReportController@index')->sinceVersion('v2');
-Route::get('legacy', 'LegacyController@index')->untilVersion('v2');
-Route::get('window', 'WindowController@index')->sinceVersion('v2')->untilVersion('v3');
+use App\Http\Controllers\LegacyController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\WindowController;
+
+Route::get('profile', [ProfileController::class, 'show'])->versions('v1', 'v2', 'v3');
+Route::get('reports', [ReportController::class, 'index'])->sinceVersion('v2');
+Route::get('legacy', [LegacyController::class, 'index'])->untilVersion('v2');
+Route::get('window', [WindowController::class, 'index'])->sinceVersion('v2')->untilVersion('v3');
 ```
 
 | Method | Available in |
@@ -22,8 +27,10 @@ Both bounds are inclusive and follow the order of `versions` in the configuratio
 A single route can take the version from its own URL:
 
 ```php title="routes/api.php"
+use App\Http\Controllers\ProfileController;
+
 Route::prefix('api/{version}')->group(function () {
-    Route::get('profile', 'ProfileController@show')->versions('v1', 'v2');
+    Route::get('profile', [ProfileController::class, 'show'])->versions('v1', 'v2');
 });
 ```
 

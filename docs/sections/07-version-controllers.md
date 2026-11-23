@@ -3,10 +3,14 @@
 `->controllers()` maps versions to controllers on one route:
 
 ```php title="routes/api.php"
-Route::get('users/{user}', 'UserController@show')->controllers([
-    'v1' => 'UserV1Controller@show',
+use App\Http\Controllers\ShowUserV3Controller;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserV1Controller;
+
+Route::get('users/{user}', [UserController::class, 'show'])->controllers([
+    'v1' => [UserV1Controller::class, 'show'],
     'v2' => ['App\Http\Controllers\UserV2Controller', 'show'],
-    'v3' => 'ShowUserV3Controller',      // invokable
+    'v3' => ShowUserV3Controller::class, // invokable
 ]);
 ```
 
@@ -25,15 +29,18 @@ The controller is selected when the route is matched, before Laravel gathers the
 A version without a mapping is not found (`status.unavailable`, 404 by default). The route's own controller (`UserController@show` above) is used only when you say so:
 
 ```php title="routes/api.php"
-Route::get('users', 'UserController@index')
-    ->controllers(['v3' => 'UserV3Controller@index'], true); // v1 and v2 use UserController@index
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserV3Controller;
+
+Route::get('users', [UserController::class, 'index'])
+    ->controllers(['v3' => [UserV3Controller::class, 'index']], true); // v1 and v2 use UserController@index
 ```
 
 Combine maps with constraints to stop at a version: `->controllers([...], true)->untilVersion('v3')`.
 
 ### Names, URLs and route:list
 
-The route keeps its name and its own action, so `route('users.show', $user)`, `action('UserController@show')` and `route:list` show the definition you wrote. One route name covers every version of the endpoint.
+The route keeps its name and its own action, so `route('users.show', $user)`, `action([UserController::class, 'show'])` and `route:list` show the definition you wrote. One route name covers every version of the endpoint.
 
 :::info Why one route per URI
 In header and query mode every version shares the URL, and Laravel can only match one route per method and URI. The package keeps that single route and changes only which controller serves the request.

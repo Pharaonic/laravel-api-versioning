@@ -3,8 +3,10 @@
 `Route::version()` registers routes that belong to one version. It takes a closure or a route file, or returns a registrar that accepts Laravel's group attributes.
 
 ```php title="routes/api.php"
+use App\Http\Controllers\UserV1Controller;
+
 Route::version('v1', function () {
-    Route::apiResource('users', 'UserV1Controller');
+    Route::apiResource('users', UserV1Controller::class);
 });
 
 Route::version('v2')
@@ -26,12 +28,15 @@ Without configuration a version group adds no URL prefix, so in header or query 
 ```
 
 ```php title="routes/api.php"
+use App\Http\Controllers\UserV1Controller;
+use App\Http\Controllers\UserV2Controller;
+
 Route::version('v1', function () {
-    Route::get('users', 'UserV1Controller@index')->name('users'); // /api/v1/users, v1.users
+    Route::get('users', [UserV1Controller::class, 'index'])->name('users'); // /api/v1/users, v1.users
 });
 
 Route::version('v2', function () {
-    Route::get('users', 'UserV2Controller@index')->name('users'); // /api/v2/users, v2.users
+    Route::get('users', [UserV2Controller::class, 'index'])->name('users'); // /api/v2/users, v2.users
 });
 ```
 
@@ -42,12 +47,15 @@ The template is added inside every prefix and name already in effect, including 
 `Route::versions()`, `Route::sinceVersion()` and `Route::untilVersion()` constrain a group without adding a prefix. They are the way to version resource routes, because `Route::apiResource()` returns a pending registration rather than a route:
 
 ```php title="routes/api.php"
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ReportController;
+
 Route::sinceVersion('v2')->middleware('auth:api')->group(function () {
-    Route::apiResource('reports', 'ReportController');
+    Route::apiResource('reports', ReportController::class);
 });
 
 Route::versions('v1', 'v2')->group(function () {
-    Route::get('legacy/export', 'ExportController@legacy');
+    Route::get('legacy/export', [ExportController::class, 'legacy']);
 });
 ```
 
@@ -62,7 +70,9 @@ Constraints combine: `Route::sinceVersion('v2')->untilVersion('v3')`, and nested
 The registrar also registers one route:
 
 ```php title="routes/api.php"
-Route::version('v2')->middleware('auth:api')->get('reports', 'ReportController@index');
+use App\Http\Controllers\ReportController;
+
+Route::version('v2')->middleware('auth:api')->get('reports', [ReportController::class, 'index']);
 ```
 
 Resources need `->group()`.

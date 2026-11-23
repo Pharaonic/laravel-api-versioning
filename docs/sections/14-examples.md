@@ -5,16 +5,20 @@
 Every endpoint lives once; versions change controllers or fields.
 
 ```php title="routes/api.php"
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserV2Controller;
+
 Route::sinceVersion('v1')->group(function () {
-    Route::get('users', 'UserController@index');
-    Route::get('users/{user}', 'UserController@show')->controllers([
-        'v1' => 'UserController@show',
-        'v2' => 'UserV2Controller@show',
+    Route::get('users', [UserController::class, 'index']);
+    Route::get('users/{user}', [UserController::class, 'show'])->controllers([
+        'v1' => [UserController::class, 'show'],
+        'v2' => [UserV2Controller::class, 'show'],
     ], true);
 });
 
 Route::sinceVersion('v2')->group(function () {
-    Route::apiResource('teams', 'TeamController');
+    Route::apiResource('teams', TeamController::class);
 });
 ```
 
