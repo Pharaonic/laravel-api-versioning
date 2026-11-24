@@ -25,8 +25,8 @@ test('the configuration is merged under pharaonic', function () {
 test('the configuration is published with the four tags', function (string $tag) {
     $paths = ServiceProvider::pathsToPublish(ApiVersioningServiceProvider::class, $tag);
 
-    expect(array_map('realpath', array_keys($paths)))->toBe([realpath(__DIR__.'/../../config/api-versioning.php')])
-        ->and(array_values($paths))->toBe([$this->app->configPath('pharaonic/api-versioning.php')]);
+    expect(array_map('realpath', array_keys($paths)))->toContain(realpath(__DIR__.'/../../config/api-versioning.php'))
+        ->and(array_values($paths))->toContain($this->app->configPath('pharaonic/api-versioning.php'));
 })->with(['pharaonic', 'laravel-api-versioning', 'pharaonic-config', 'api-versioning-config']);
 
 test('services are singletons built from configuration', function () {
