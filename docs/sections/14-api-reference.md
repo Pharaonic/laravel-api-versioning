@@ -78,4 +78,4 @@ Resolve it from the container.
 | --- | --- |
 | `Concerns\InteractsWithApiVersion` | Trait providing the same `whenVersion()`, for resources written for Laravel 8 and earlier |
 | `Contracts\VersionResolver` | `resolve(Request $request): ?string` for custom resolvers |
-| `Exceptions\ApiVersionException` | `errorCode()` plus the `MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` and `RETIRED` constants |
+| `Exceptions\ApiVersionException` | `errorCode()`, `localizedMessage()` plus the `MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` and `RETIRED` constants |
