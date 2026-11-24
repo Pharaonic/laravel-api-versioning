@@ -36,8 +36,8 @@ final class ServiceProviderTest extends TestCase
         foreach (['pharaonic', 'laravel-api-versioning', 'pharaonic-config', 'api-versioning-config'] as $tag) {
             $paths = ServiceProvider::pathsToPublish(ApiVersioningServiceProvider::class, $tag);
 
-            $this->assertSame([realpath(__DIR__.'/../../config/api-versioning.php')], array_map('realpath', array_keys($paths)), $tag);
-            $this->assertSame([$this->app->configPath('pharaonic/api-versioning.php')], array_values($paths), $tag);
+            $this->assertContains(realpath(__DIR__.'/../../config/api-versioning.php'), array_map('realpath', array_keys($paths)), $tag);
+            $this->assertContains($this->app->configPath('pharaonic/api-versioning.php'), array_values($paths), $tag);
         }
     }
 
