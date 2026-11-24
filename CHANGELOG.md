@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 6.1.0 - Unreleased
+
+### Added
+
+- Translated error messages in the `api-versioning` namespace, English and Arabic, published with the `api-versioning-translations` tag, and `ApiVersionException::localizedMessage()` to send them in your own error format. `getMessage()`, Laravel's default rendering and error codes stay the same.
+
 ## 6.0.0 - 2026-11-23
 
 ### Added
