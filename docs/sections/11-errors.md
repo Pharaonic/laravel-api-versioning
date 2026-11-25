@@ -18,9 +18,19 @@ use Pharaonic\Laravel\ApiVersioning\Exceptions\ApiVersionException;
 
 ->withExceptions(function (Exceptions $exceptions) {
     $exceptions->render(function (ApiVersionException $e) {
-        return response()->json(['error' => $e->errorCode()], $e->getStatusCode(), $e->getHeaders());
+        return response()->json(['error' => $e->errorCode(), 'message' => $e->localizedMessage()], $e->getStatusCode(), $e->getHeaders());
     });
 })
+```
+
+### Translated Messages
+
+The messages are translated in the application locale from `api-versioning::messages` (`missing`, `unknown`, `conflict`, `unavailable`, `retired`). English and Arabic ship with the package, and a locale without a line falls back to English. `localizedMessage()` returns the translated message for your own error format, as in the handler above; `getMessage()`, which Laravel renders by default and your logs record, stays in English. With `pharaonic/laravel-api-response` the envelope uses the translated message by itself. Error codes never change with the locale.
+
+Publish the files to change a line or add a language:
+
+```bash title="Terminal" no-line-numbers
+php artisan vendor:publish --tag=api-versioning-translations
 ```
 
 Version errors are found right after the route is matched, before the route's middleware: a request with an unknown version gets 400 even when the route needs authentication.
