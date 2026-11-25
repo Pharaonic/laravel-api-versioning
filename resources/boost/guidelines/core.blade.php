@@ -8,7 +8,7 @@ API versioning on Laravel's own `Route` facade: version groups and per-route con
 - Only versioned routes (a constraint, a version group or `->controllers()`) resolve a version; other routes are untouched. Give endpoints that exist in every version `->sinceVersion('v1')`.
 - No URL prefix is added unless `path.prefix` is set (`'api/{version}'`). With header or query versions, keep one route per method and URI and vary it with `->controllers()` or `whenVersion()`.
 - Read the version with `$request->apiVersion()` (a `Version`, or `null`); never store it in a static property or a singleton.
-- Bad versions throw `ApiVersionException` (an `HttpException`, rendered by Laravel); read `errorCode()` to build your own error format.
+- Bad versions throw `ApiVersionException` (an `HttpException`, rendered by Laravel); read `errorCode()` and `localizedMessage()` (the message in the current locale) to build your own error format.
 
 ### Main features
 
