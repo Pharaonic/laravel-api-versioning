@@ -52,10 +52,16 @@ final class ApiVersioningServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'api-versioning');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/api-versioning.php' => $this->app->configPath('pharaonic/api-versioning.php'),
             ], ['pharaonic', 'laravel-api-versioning', 'pharaonic-config', 'api-versioning-config']);
+
+            $this->publishes([
+                __DIR__.'/../resources/lang' => $this->app->resourcePath('lang/vendor/api-versioning'),
+            ], ['pharaonic', 'laravel-api-versioning', 'pharaonic-translations', 'api-versioning-translations']);
         }
 
         Macros::register();

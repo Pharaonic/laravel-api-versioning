@@ -72,4 +72,4 @@ Resolve it from the container.
 | --- | --- |
 | `Concerns\InteractsWithApiVersion` | Trait adding `whenVersion(string $expression, mixed $value, mixed $default = null)` to a resource |
 | `Contracts\VersionResolver` | `resolve(Request $request): ?string` for custom resolvers |
-| `Exceptions\ApiVersionException` | `errorCode()` plus the `MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` and `RETIRED` constants |
+| `Exceptions\ApiVersionException` | `errorCode()`, `localizedMessage()` plus the `MISSING`, `UNKNOWN`, `CONFLICT`, `UNAVAILABLE` and `RETIRED` constants |
